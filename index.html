@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SongApp</title>
+</head>
+<body>
+    <nav>
+        <a href="index.html">All Songs</a>
+        <a href="add_song.html">Add Song</a>
+        <a href="delete_song.html">Delete Song</a>
+    </nav>
+    <h1>
+        Songs
+    </h1>
+    
+    <ul>
+
+    </ul>
+
+    <script>
+        addEventListener("DOMContentLoaded", async function(){
+            const response = await fetch("http://localhost:3000/api/songs")
+            const songs = await response.json();
+
+            let html = ""
+            for(let song of songs){
+                html += `
+                    <li>${song.title} - ${song.artist} </li>
+                `
+            }
+            document.querySelector("ul").innerHTML = html
+
+
+
+        })
+    </script>
+
+
+</body>
+</html>

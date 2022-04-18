@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+        <a href="index.html">All Songs</a>
+        <a href="add_song.html">Add Song</a>
+        <a href="delete_song.html">Delete Song</a>
+    </nav>
+    <h1>Add Song</h1>
+
+    <form>
+        <div>
+           <label for="title">Title:</label>
+           <input type="text" id="title">
+        </div>
+        <div>
+           <label for="artist">Artist:</label>
+           <input type="text" id="artist">
+        </div>
+        <div>
+           <label for="released">Released:</label>
+           <input type="date" id="released">
+        </div>
+        <div>
+           <label for="popularity">Popularity:</label>
+           <input type="number" min="1" max="10" id="popularity">
+        </div>
+        <div>
+           <label for="genre">Genre:</label>
+           <input type="text" id="genre">
+        </div>
+        <div>
+           <input type="button" id="addBtn" value="Add">
+        </div>
+     
+        <div id="error"></div>
+     </form>
+
+     <script>
+         addEventListener("DOMContentLoaded", function(){
+             document.querySelector("#addBtn").addEventListener("click", addSong);
+         });
+
+         async function addSong(){
+             //create a song object based on the form filled out..grab data from the form
+             const song = {
+                 title: document.querySelector("#title").value,
+                 artist: document.querySelector("#artist").value,
+                 releaseDate: document.querySelector("#released").value,
+                 popularity: document.querySelector("#popularity").value,
+                 genre: document.querySelector("#genre").value ?
+                    document.querySelector("#genre").value.split(",") : []
+             };
+
+             const response = await fetch("http://localhost:3000/api/songs",{
+                 method: "POST",
+                 headers:{
+                     "Content-Type" : "application/json"
+                 },
+                 body: JSON.stringify(song)
+
+             });
+
+             if(response.ok){
+                 const results = await response.json();
+                 alert("Added songwith ID" + results._id);
+
+                 //reset the form after song is successful
+                 document.querySelector("form").reset();
+             }
+
+             else{
+                document.querySelector("#error").innerHTML = "Cannot add song.";
+             }
+         }
+     </script>
+</body>
+</html>
