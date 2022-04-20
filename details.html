@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details</title>
+</head>
+<body>
+    <h1></h1>
+    <div></div>
+
+    <script>
+        addEventListener("DOMContentLoaded", async function(){
+            const urlparam = new URLSearchParams(window.location.search)
+            const songID = urlparam.get('id')
+            console.log(songID)
+
+            const response = await fetch("http://localhost:3000/api/songs/" + songID)
+            const song = await response.json()
+            console.log(song)
+
+            let heading = ""
+            heading += `Welcome to the ${song.title} Page`
+
+            let html = ""
+            html += `
+                <h2>Title - ${song.title} </h2>
+                <p>Artist - ${song.artist}</p>
+                <p>Popularity - ${song.popularity}</p>
+                <p>Release Date - ${song.releaseDate}</p>
+                
+                `
+                document.querySelector("div").innerHTML = html
+                document.querySelector("h1").innerHTML = heading
+
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit</title>
+</head>
+<body>
+    <nav>
+        <a href="index.html">All Songs</a>
+        <a href="add_song.html">Add Song</a>
+        <a href="delete_song.html">Delete Song</a>
+    </nav>
+    <h1>Edit Song</h1>
+    
+    <form>
+        <div>
+            <label for="songId">ID:</label>
+            <input type="text" id="songId">
+         </div>
+        <div>
+           <label for="title">Title:</label>
+           <input type="text" id="title">
+        </div>
+        <div>
+           <label for="artist">Artist:</label>
+           <input type="text" id="artist">
+        </div>
+        <div>
+           <label for="released">Released:</label>
+           <input type="date" id="released">
+        </div>
+        <div>
+           <label for="popularity">Popularity:</label>
+           <input type="number" min="1" max="10" id="popularity">
+        </div>
+        <div>
+           <label for="genre">Genre:</label>
+           <input type="text" id="genre">
+        </div>
+        <div>
+           <input type="button" id="updateBtn" value="Update">
+        </div>
+     
+        <div id="error"></div>
+     </form>
+
+     <script>
+         addEventListener("DOMContentLoaded", async function(){
+             document.querySelector("#updateBtn").addEventListener("click",updateSong)
+
+             const urlparam = new URLSearchParams(window.location.search)
+             const songID = urlparam.get('id')
+
+             const response = await fetch("http://localhost:3000/api/songs/" + songID)
+             if(response.ok){
+                 let song = await response.json()
+                 document.querySelector("#songId").value = song._id
+                 document.querySelector("#title").value = song.title
+                 document.querySelector("#artist").value = song.artist
+                 document.querySelector("#released").value = song.releaseDate.substring(0,10)
+                 document.querySelector("#popularity").value = song.popularity
+                 document.querySelector("#genre").value = song.genre
+
+             }         
+            })
+
+            async function updateSong() {
+   // Create a song object from the form fields
+   const songID = document.querySelector("#songId").value
+   const song = {
+      _id: document.querySelector("#songId").value,
+      title: document.querySelector("#title").value,
+      artist: document.querySelector("#artist").value,
+      releaseDate: document.querySelector("#released").value,
+      popularity: document.querySelector("#popularity").value,
+      genre: document.querySelector("#genre").value ? 
+         document.querySelector("#genre").value.split(",") : []
+   };
+        
+    // Send PUT request with JSON-encoded song to Music API
+   const response = await fetch("http://localhost:3000/api/songs/" + songID, {
+      method: "PUT",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify(song)
+   });
+
+   if (response.ok) {      
+      alert("Updated song.");
+   }
+   else {
+      document.querySelector("#error").innerHTML = "Cannot update song.";
+   }     
+}
+     </script>
+</body>
+</html>
